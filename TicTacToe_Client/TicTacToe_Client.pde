@@ -1,5 +1,8 @@
 import processing.net.*;
 
+color green=#139D11;
+color red=#CB0808;
+boolean myTurn=false;
 Client myClient;
 int[][]grid;
 
@@ -15,16 +18,11 @@ void setup() {
 }
 
 void draw() {
-  
-  int row=0;
-  int col=0;
-  while(row<3){
-    drawXO(row,col);
-    col++;
-    if(col==3){
-      col = 0;
-      row++;
-      println("");
+  if(myTurn)background(green);
+  else background(red);
+  for(int row=0;row<3;row++){
+    for(int col=0;col<3;col++){
+      drawXO(row,col);
     }
   }
   
@@ -42,6 +40,7 @@ void draw() {
     int r=int(incoming.substring(0,1));
     int c=int(incoming.substring(2,3));
     grid[r][c]=1;
+    myTurn=true;
   }
 }
 
@@ -62,8 +61,9 @@ void drawXO(int row,int col){
 void mouseReleased() {
   int row=mouseX/100;
   int col=mouseY/100;
-  if (grid[row][col]==0) {
+  if (grid[row][col]==0&&myTurn) {
     grid[row][col]=2;
     myClient.write(row+","+col);
+    myTurn=false;
   }
 }

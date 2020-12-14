@@ -1,13 +1,15 @@
 import processing.net.*;
 
+color green=#139D11;
+color red=#CB0808;
+boolean myTurn=true;
 int[][] grid;
 Server myServer;
 String incoming;
 String outgoing;
 String valid = "eBFIBFOAUIBGOUIAEG";
 
-void setup() {
-  
+void setup(){
   size(300,400);
   grid=new int[3][3];
   myServer=new Server(this,1234);
@@ -16,20 +18,14 @@ void setup() {
   strokeWeight(3);
   textAlign(CENTER,CENTER);
   textSize(30);
-  
 }
 
-void draw() {
-  background(255);
-  int row=0;
-  int col=0;
-  while (row<3) {
-    drawXO(row,col);
-    col++;
-    if (col==3) {
-      col = 0;
-      row++;
-      //println("");
+void draw(){
+  if(myTurn)background(green);
+  else background(red);
+  for(int row=0;row<3;row++){
+    for(int col=0;col<3;col++){
+      drawXO(row,col);
     }
   }
   
@@ -48,16 +44,17 @@ void draw() {
     int r=int(incoming.substring(0,1));
     int c=int(incoming.substring(2,3));
     grid[r][c]=2;
+    myTurn=true;
   }
 }
 
-void drawXO(int row,int col) {
+void drawXO(int row,int col){
   pushMatrix();
   translate(row*100,col*100);
-  if (grid[row][col] == 1) {
+  if(grid[row][col] == 1){
     fill(255);
     ellipse(50,50,90,90);
-  } else if (grid[row][col] == 2) {
+  }else if (grid[row][col] == 2){
     fill(0);
     line(10,10,90,90);
     line(90,10,10,90);
@@ -65,13 +62,14 @@ void drawXO(int row,int col) {
   popMatrix();
 }
 
-void mouseReleased() {
+void mouseReleased(){
   println("?");
   int row=mouseX/100;
   int col=mouseY/100;
-  if (grid[row][col]==0) {
+  if(grid[row][col]==0&&myTurn){
     myServer.write(row+","+col);
     grid[row][col]=1;
     println(row+','+col);
+    myTurn=false;
   }
 }
